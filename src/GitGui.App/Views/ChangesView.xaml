@@ -58,7 +58,7 @@
                     <CheckBox Content="Amend" IsChecked="{Binding Amend}" VerticalAlignment="Center" DockPanel.Dock="Left"/>
                     <Button Content="コミット" Style="{StaticResource PrimaryButton}" Command="{Binding CommitCommand}" Width="130" HorizontalAlignment="Right"/>
                 </DockPanel>
-                <TextBlock Text="{Binding ErrorMessage}" Foreground="#FFC42B1C" TextWrapping="Wrap" Margin="0,6,0,0"
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" Margin="0,6,0,0"
                            Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"/>
             </StackPanel>
         </Border>

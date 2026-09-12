@@ -8,6 +8,7 @@
         xmlns:views="clr-namespace:GitGui.App.Views"
         xmlns:conv="clr-namespace:GitGui.App.Converters"
         mc:Ignorable="d"
+        Icon="Assets/app.ico"
         Title="Git GUI" Height="720" Width="1200">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
@@ -17,23 +18,29 @@
     </Window.Resources>
 
     <DockPanel>
-        <ToolBar DockPanel.Dock="Top">
-            <Button Content="開く..." Command="{Binding OpenRepositoryDialogCommand}" Margin="0,0,4,0"/>
-            <Button Content="クローン..." Command="{Binding CloneRepositoryDialogCommand}" Margin="0,0,4,0"/>
-            <Separator/>
-            <Button Content="Fetch" Command="{Binding FetchCommand}" IsEnabled="{Binding IsRepositoryOpen}" Margin="0,0,4,0"/>
-            <Button Content="Pull" Command="{Binding PullCommand}" IsEnabled="{Binding IsRepositoryOpen}" Margin="0,0,4,0"/>
-            <Button Content="Push" Command="{Binding PushCommand}" IsEnabled="{Binding IsRepositoryOpen}" Margin="0,0,4,0"/>
-            <Separator/>
-            <Button Content="更新" Command="{Binding RefreshAllCommand}" IsEnabled="{Binding IsRepositoryOpen}" Margin="0,0,4,0"/>
-            <Separator/>
-            <Border Background="{StaticResource SelectedBackgroundBrush}" CornerRadius="10" Padding="10,3" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="●" FontSize="9" Foreground="{StaticResource AccentDarkBrush}" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="{Binding CurrentBranchName}" FontWeight="SemiBold" Foreground="{StaticResource AccentDarkBrush}" VerticalAlignment="Center"/>
+        <Border DockPanel.Dock="Top" Background="{StaticResource ChromeBackgroundBrush}"
+                BorderBrush="{StaticResource BorderBrush2}" BorderThickness="0,0,0,1" Padding="12,10">
+            <DockPanel>
+                <Border DockPanel.Dock="Right" Background="{StaticResource SelectedBackgroundBrush}"
+                        CornerRadius="10" Padding="14,8" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="●" FontSize="9" Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="{Binding CurrentBranchName}" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="開く..." Style="{StaticResource ToolbarButton}" Command="{Binding OpenRepositoryDialogCommand}"/>
+                    <Button Content="クローン..." Style="{StaticResource ToolbarButton}" Command="{Binding CloneRepositoryDialogCommand}"/>
+                    <Separator/>
+                    <Button Content="Fetch" Style="{StaticResource ToolbarButton}" Command="{Binding FetchCommand}" IsEnabled="{Binding IsRepositoryOpen}"/>
+                    <Button Content="Pull" Style="{StaticResource ToolbarButton}" Command="{Binding PullCommand}" IsEnabled="{Binding IsRepositoryOpen}"/>
+                    <Button Content="Push" Style="{StaticResource ToolbarButton}" Command="{Binding PushCommand}" IsEnabled="{Binding IsRepositoryOpen}"/>
+                    <Separator/>
+                    <Button Content="更新" Style="{StaticResource ToolbarButton}" Command="{Binding RefreshAllCommand}" IsEnabled="{Binding IsRepositoryOpen}"/>
                 </StackPanel>
-            </Border>
-        </ToolBar>
+            </DockPanel>
+        </Border>
 
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>

@@ -7,9 +7,9 @@ namespace GitGui.App.Converters;
 
 public sealed class DiffLineKindToBackgroundConverter : IValueConverter
 {
-    private static readonly SolidColorBrush Added = new(Color.FromRgb(0xDD, 0xF4, 0xDD));
-    private static readonly SolidColorBrush Removed = new(Color.FromRgb(0xFB, 0xDD, 0xDD));
-    private static readonly SolidColorBrush Header = new(Color.FromRgb(0xE9, 0xE9, 0xF2));
+    private static readonly SolidColorBrush Added = new(Color.FromArgb(0x33, 0x3F, 0xB9, 0x50));
+    private static readonly SolidColorBrush Removed = new(Color.FromArgb(0x33, 0xF8, 0x51, 0x49));
+    private static readonly SolidColorBrush Header = new(Color.FromRgb(0x1C, 0x22, 0x29));
     private static readonly SolidColorBrush Transparent = Brushes.Transparent;
 
     static DiffLineKindToBackgroundConverter()

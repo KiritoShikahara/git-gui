@@ -24,15 +24,15 @@
         </Border>
 
         <Border Grid.Row="1">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer Background="Transparent" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Converter={StaticResource FlatLinesConverter}}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Background="{Binding Kind, Converter={StaticResource LineBgConverter}}">
                                 <StackPanel Orientation="Horizontal" TextElement.FontFamily="Consolas" TextElement.FontSize="12">
-                                    <TextBlock Width="40" Foreground="Gray" TextAlignment="Right" Margin="2,0,4,0"
+                                    <TextBlock Width="40" Foreground="{StaticResource TextSecondaryBrush}" TextAlignment="Right" Margin="2,0,4,0"
                                                Text="{Binding OldLineNumber}"/>
-                                    <TextBlock Width="40" Foreground="Gray" TextAlignment="Right" Margin="0,0,6,0"
+                                    <TextBlock Width="40" Foreground="{StaticResource TextSecondaryBrush}" TextAlignment="Right" Margin="0,0,6,0"
                                                Text="{Binding NewLineNumber}"/>
                                     <TextBlock Width="14" Text="{Binding Kind, Converter={StaticResource LinePrefixConverter}}"/>
                                     <TextBlock Text="{Binding Content}" TextWrapping="NoWrap"/>

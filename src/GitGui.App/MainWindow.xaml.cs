@@ -1,4 +1,5 @@
 using System.Windows;
+using GitGui.App.Native;
 using GitGui.App.ViewModels;
 using GitGui.App.Views;
 using Microsoft.Win32;
@@ -10,6 +11,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        DarkTitleBar.Apply(this);
 
         if (DataContext is MainWindowViewModel vm)
         {

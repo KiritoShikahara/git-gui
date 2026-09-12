@@ -34,24 +34,36 @@
                     <GridViewColumn Header="" Width="20">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="●" Foreground="SeaGreen"
+                                <TextBlock Text="●" Foreground="{StaticResource SuccessBrush}"
                                            Visibility="{Binding IsCurrentRepositoryHead, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="ブランチ名" Width="220" DisplayMemberBinding="{Binding FriendlyName}"/>
-                    <GridViewColumn Header="種類" Width="80">
+                    <GridViewColumn Header="ブランチ名" Width="220">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding IsRemote, Converter={StaticResource BranchKindConverter}}"/>
+                                <TextBlock Text="{Binding FriendlyName}" Foreground="{StaticResource TextPrimaryBrush}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Upstream" Width="180" DisplayMemberBinding="{Binding UpstreamName}"/>
+                    <GridViewColumn Header="種類" Width="80">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding IsRemote, Converter={StaticResource BranchKindConverter}}" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Upstream" Width="180">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding UpstreamName}" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="Ahead/Behind" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock>
+                                <TextBlock Foreground="{StaticResource TextPrimaryBrush}">
                                     <Run Text="↑"/><Run Text="{Binding AheadBy, Mode=OneWay}"/>
                                     <Run Text="  ↓"/><Run Text="{Binding BehindBy, Mode=OneWay}"/>
                                 </TextBlock>
@@ -79,7 +91,7 @@
             </ListView.View>
         </ListView>
 
-        <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="#FFC42B1C" TextWrapping="Wrap" Margin="0,8,0,0"
+        <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" Margin="0,8,0,0"
                    Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"/>
     </Grid>
 </UserControl>

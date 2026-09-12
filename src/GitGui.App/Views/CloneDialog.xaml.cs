@@ -1,4 +1,5 @@
 using System.Windows;
+using GitGui.App.Native;
 using Microsoft.Win32;
 
 namespace GitGui.App.Views;
@@ -11,6 +12,7 @@ public partial class CloneDialog : Window
     public CloneDialog()
     {
         InitializeComponent();
+        DarkTitleBar.Apply(this);
     }
 
     private void BrowseButton_Click(object sender, RoutedEventArgs e)
