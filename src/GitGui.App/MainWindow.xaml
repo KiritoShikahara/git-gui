@@ -38,6 +38,12 @@
                     <Button Content="Push" Style="{StaticResource ToolbarButton}" Command="{Binding PushCommand}" IsEnabled="{Binding IsRepositoryOpen}"/>
                     <Separator/>
                     <Button Content="更新" Style="{StaticResource ToolbarButton}" Command="{Binding RefreshAllCommand}" IsEnabled="{Binding IsRepositoryOpen}"/>
+                    <Separator/>
+                    <ComboBox Width="200" VerticalAlignment="Center" Margin="0,0,6,0"
+                              ItemsSource="{Binding Identities}" SelectedItem="{Binding SelectedIdentity}"
+                              DisplayMemberPath="DisplayName" IsEnabled="{Binding IsRepositoryOpen}"
+                              ToolTip="このリポジトリで使うアカウント（名前・メール）を切り替えます。"/>
+                    <Button Content="アカウント管理..." Style="{StaticResource ToolbarButton}" Command="{Binding ManageIdentitiesCommand}"/>
                 </StackPanel>
             </DockPanel>
         </Border>

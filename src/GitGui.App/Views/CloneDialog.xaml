@@ -2,9 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Icon="/Assets/app.ico"
+        Background="{StaticResource AppBackgroundBrush}"
         Title="リポジトリのクローン" Height="200" Width="480"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
-    <Grid Margin="12">
+    <Grid Margin="12" Background="{StaticResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -13,18 +14,18 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="リポジトリURL"/>
+        <TextBlock Grid.Row="0" Text="リポジトリURL" Foreground="{StaticResource TextSecondaryBrush}"/>
         <TextBox Grid.Row="1" x:Name="UrlTextBox" Margin="0,4,0,12"/>
 
-        <TextBlock Grid.Row="2" Text="保存先フォルダー"/>
+        <TextBlock Grid.Row="2" Text="保存先フォルダー" Foreground="{StaticResource TextSecondaryBrush}"/>
         <DockPanel Grid.Row="3" VerticalAlignment="Top" Margin="0,4,0,0">
-            <Button DockPanel.Dock="Right" Content="参照..." Padding="8,2" Margin="6,0,0,0" Click="BrowseButton_Click"/>
+            <Button DockPanel.Dock="Right" Content="参照..." Style="{StaticResource SecondaryButton}" Padding="8,2" Margin="6,0,0,0" Click="BrowseButton_Click"/>
             <TextBox x:Name="DestinationTextBox"/>
         </DockPanel>
 
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
             <Button Content="クローン" Style="{StaticResource PrimaryButton}" Width="90" IsDefault="True" Click="CloneButton_Click"/>
-            <Button Content="キャンセル" Width="90" Margin="8,0,0,0" IsCancel="True"/>
+            <Button Content="キャンセル" Style="{StaticResource SecondaryButton}" Width="90" Margin="8,0,0,0" IsCancel="True"/>
         </StackPanel>
     </Grid>
 </Window>

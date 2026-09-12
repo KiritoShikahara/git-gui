@@ -2,6 +2,7 @@ using System.Windows;
 using GitGui.App.Native;
 using GitGui.App.ViewModels;
 using GitGui.App.Views;
+using GitGui.Core.Models;
 using Microsoft.Win32;
 
 namespace GitGui.App;
@@ -17,6 +18,7 @@ public partial class MainWindow : Window
         {
             vm.RequestFolderPick += OnRequestFolderPick;
             vm.RequestCloneDialog += OnRequestCloneDialog;
+            vm.RequestManageIdentities += OnRequestManageIdentities;
         }
     }
 
@@ -30,5 +32,12 @@ public partial class MainWindow : Window
     {
         var dialog = new CloneDialog { Owner = this };
         return dialog.ShowDialog() == true ? (dialog.Url, dialog.Destination) : null;
+    }
+
+    private IReadOnlyList<GitIdentityModel> OnRequestManageIdentities(IReadOnlyList<GitIdentityModel> current)
+    {
+        var dialog = new IdentitiesDialog(current) { Owner = this };
+        dialog.ShowDialog();
+        return dialog.Identities;
     }
 }

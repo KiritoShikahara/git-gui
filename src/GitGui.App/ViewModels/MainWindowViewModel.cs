@@ -1,6 +1,8 @@
+using System.Collections.ObjectModel;
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GitGui.Core.Models;
 using GitGui.Core.Services;
 
 namespace GitGui.App.ViewModels;
@@ -9,10 +11,17 @@ public partial class MainWindowViewModel : ObservableObject
 {
     private readonly RepositoryService _repositoryService = new();
     private readonly GitCliService _gitCliService = new();
+    private readonly IdentityStore _identityStore = new();
+    private bool _suppressIdentityApply;
 
     public ChangesViewModel ChangesVm { get; }
     public BranchesViewModel BranchesVm { get; }
     public HistoryViewModel HistoryVm { get; }
+
+    public ObservableCollection<GitIdentityModel> Identities { get; } = [];
+
+    [ObservableProperty]
+    private GitIdentityModel? _selectedIdentity;
 
     [ObservableProperty]
     private string _repositoryPath = "リポジトリが開かれていません";
@@ -34,6 +43,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     public event Func<string?>? RequestFolderPick;
     public event Func<(string Url, string Destination)?>? RequestCloneDialog;
+    public event Func<IReadOnlyList<GitIdentityModel>, IReadOnlyList<GitIdentityModel>>? RequestManageIdentities;
 
     public MainWindowViewModel()
     {
@@ -41,6 +51,63 @@ public partial class MainWindowViewModel : ObservableObject
         BranchesVm = new BranchesViewModel(_repositoryService, OnRepositoryChanged);
         HistoryVm = new HistoryViewModel(_repositoryService);
         _gitCliService.OutputReceived += line => App.Current.Dispatcher.Invoke(() => StatusMessage = line);
+
+        foreach (var identity in _identityStore.Load())
+        {
+            Identities.Add(identity);
+        }
+    }
+
+    partial void OnSelectedIdentityChanged(GitIdentityModel? value)
+    {
+        if (_suppressIdentityApply || value is null || !IsRepositoryOpen) return;
+
+        _repositoryService.SetLocalIdentity(value.Name, value.Email);
+        StatusMessage = $"このリポジトリのアカウントを「{value.DisplayName}」に切り替えました。";
+    }
+
+    [RelayCommand]
+    private void ManageIdentities()
+    {
+        var result = RequestManageIdentities?.Invoke(Identities.ToList());
+        if (result is null) return;
+
+        var previousSelection = SelectedIdentity;
+        Identities.Clear();
+        foreach (var identity in result)
+        {
+            Identities.Add(identity);
+        }
+        _identityStore.Save(Identities);
+
+        if (previousSelection is not null && Identities.Contains(previousSelection))
+        {
+            _suppressIdentityApply = true;
+            SelectedIdentity = Identities.First(i => i.Equals(previousSelection));
+            _suppressIdentityApply = false;
+        }
+        else
+        {
+            SelectedIdentity = null;
+        }
+    }
+
+    /// <summary>Syncs the account dropdown to whichever identity is actually configured for this repository,
+    /// registering it as a new saved identity the first time it's seen.</summary>
+    private void SyncIdentityFromRepository()
+    {
+        var effective = _repositoryService.GetEffectiveIdentity();
+        var match = Identities.FirstOrDefault(i => i.Equals(effective));
+        if (match is null)
+        {
+            match = effective;
+            Identities.Add(match);
+            _identityStore.Save(Identities);
+        }
+
+        _suppressIdentityApply = true;
+        SelectedIdentity = match;
+        _suppressIdentityApply = false;
     }
 
     private void OnRepositoryChanged()
@@ -57,6 +124,7 @@ public partial class MainWindowViewModel : ObservableObject
             RepositoryPath = _repositoryService.RepositoryRoot ?? path;
             IsRepositoryOpen = true;
             RefreshAll();
+            SyncIdentityFromRepository();
             StatusMessage = "リポジトリを開きました。";
         }
         catch (Exception ex)

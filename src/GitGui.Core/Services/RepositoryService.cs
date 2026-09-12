@@ -183,6 +183,34 @@ public sealed class RepositoryService : IDisposable
         return new Signature(name, email, DateTimeOffset.Now);
     }
 
+    // ---------------- Identity ----------------
+
+    /// <summary>The name/email set specifically at the repository level (not global), or null if unset there.</summary>
+    public GitIdentityModel? GetLocalIdentity()
+    {
+        var config = Repo.Config;
+        var name = config.Get<string>("user.name", ConfigurationLevel.Local)?.Value;
+        var email = config.Get<string>("user.email", ConfigurationLevel.Local)?.Value;
+        return name is not null && email is not null ? new GitIdentityModel { Name = name, Email = email } : null;
+    }
+
+    /// <summary>The name/email that would actually be used for the next commit (local, falling back to global/system).</summary>
+    public GitIdentityModel GetEffectiveIdentity()
+    {
+        var config = Repo.Config;
+        var name = config.Get<string>("user.name")?.Value ?? "Unknown";
+        var email = config.Get<string>("user.email")?.Value ?? "unknown@example.com";
+        return new GitIdentityModel { Name = name, Email = email };
+    }
+
+    /// <summary>Sets user.name/user.email in this repository's local config, overriding the global identity for this repo only.</summary>
+    public void SetLocalIdentity(string name, string email)
+    {
+        var repo = Repo;
+        repo.Config.Set("user.name", name, ConfigurationLevel.Local);
+        repo.Config.Set("user.email", email, ConfigurationLevel.Local);
+    }
+
     // ---------------- Diff ----------------
 
     public DiffResultModel GetFileDiff(string relativePath, bool staged)
