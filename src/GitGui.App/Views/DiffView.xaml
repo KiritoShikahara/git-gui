@@ -1,0 +1,47 @@
+<UserControl x:Class="GitGui.App.Views.DiffView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:GitGui.App.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="500">
+    <UserControl.Resources>
+        <conv:DiffLineKindToBackgroundConverter x:Key="LineBgConverter"/>
+        <conv:DiffLineKindToPrefixConverter x:Key="LinePrefixConverter"/>
+        <conv:DiffResultToFlatLinesConverter x:Key="FlatLinesConverter"/>
+        <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{StaticResource HeaderBackgroundBrush}" BorderBrush="{StaticResource BorderBrush2}"
+                BorderThickness="0,0,0,1" CornerRadius="4,4,0,0" Padding="8,6">
+            <TextBlock FontWeight="SemiBold" Text="{Binding Path}"/>
+        </Border>
+
+        <Border Grid.Row="1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Converter={StaticResource FlatLinesConverter}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding Kind, Converter={StaticResource LineBgConverter}}">
+                                <StackPanel Orientation="Horizontal" TextElement.FontFamily="Consolas" TextElement.FontSize="12">
+                                    <TextBlock Width="40" Foreground="Gray" TextAlignment="Right" Margin="2,0,4,0"
+                                               Text="{Binding OldLineNumber}"/>
+                                    <TextBlock Width="40" Foreground="Gray" TextAlignment="Right" Margin="0,0,6,0"
+                                               Text="{Binding NewLineNumber}"/>
+                                    <TextBlock Width="14" Text="{Binding Kind, Converter={StaticResource LinePrefixConverter}}"/>
+                                    <TextBlock Text="{Binding Content}" TextWrapping="NoWrap"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

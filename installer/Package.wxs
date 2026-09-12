@@ -1,0 +1,51 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+
+  <Package Name="Git GUI" Manufacturer="Git GUI Project" Version="1.0.0" Codepage="UTF-8"
+           UpgradeCode="F1535DE4-AA48-4EF6-BB92-3DC1ADC52637" Scope="perUser">
+
+    <MajorUpgrade DowngradeErrorMessage="より新しいバージョンの Git GUI が既にインストールされています。" />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="INSTALLFOLDER" Name="GitGui" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ProgramMenuSubfolder" Name="Git GUI" />
+    </StandardDirectory>
+
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable" Guid="6A0D9F6B-6B0D-4C2E-9C6F-3E2C4B6C1A01">
+        <RegistryValue Root="HKCU" Key="Software\GitGui" Name="MainExecutable" Type="integer" Value="1" KeyPath="yes" />
+        <File Id="GitGuiExe" Source="$(var.PublishDir)GitGui.App.exe" />
+        <RemoveFolder Id="RemoveInstallFolder" Directory="INSTALLFOLDER" On="uninstall" />
+      </Component>
+      <Component Id="GitBootstrapScript" Guid="9B3A2E7D-2F1C-4A9E-9D6A-7B1E5C8F4402">
+        <RegistryValue Root="HKCU" Key="Software\GitGui" Name="GitBootstrapScript" Type="integer" Value="1" KeyPath="yes" />
+        <File Id="InstallGitScript" Source="scripts\install-git-if-missing.cmd" />
+      </Component>
+    </ComponentGroup>
+
+    <Component Id="ApplicationShortcut" Directory="ProgramMenuSubfolder" Guid="3C7E1A4F-8D2B-4E6A-BF3D-1A9C5E7B0203">
+      <Shortcut Id="StartMenuShortcut" Name="Git GUI"
+                Target="[INSTALLFOLDER]GitGui.App.exe" WorkingDirectory="INSTALLFOLDER" />
+      <RemoveFolder Id="RemoveProgramMenuSubfolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\GitGui" Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <Feature Id="MainFeature" Title="Git GUI" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+
+    <CustomAction Id="InstallGitIfMissing" Directory="INSTALLFOLDER"
+                  ExeCommand="cmd.exe /c &quot;[INSTALLFOLDER]install-git-if-missing.cmd&quot;"
+                  Execute="immediate" Return="ignore" />
+
+    <InstallExecuteSequence>
+      <Custom Action="InstallGitIfMissing" After="InstallFiles" Condition="NOT Installed" />
+    </InstallExecuteSequence>
+
+  </Package>
+</Wix>

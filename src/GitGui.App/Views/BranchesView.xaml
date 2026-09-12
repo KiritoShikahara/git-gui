@@ -1,0 +1,85 @@
+<UserControl x:Class="GitGui.App.Views.BranchesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:GitGui.App.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="500" d:DesignWidth="700">
+    <UserControl.Resources>
+        <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:BranchKindConverter x:Key="BranchKindConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush2}"
+                BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,10">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Content="新規ブランチ作成" Style="{StaticResource PrimaryButton}"
+                        Command="{Binding CreateBranchCommand}" Margin="8,0,0,0"/>
+                <TextBox Text="{Binding NewBranchName, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+        <ListView Grid.Row="1" ItemsSource="{Binding Branches}" SelectedItem="{Binding SelectedBranch}"
+                  x:Name="BranchListView">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="" Width="20">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="●" Foreground="SeaGreen"
+                                           Visibility="{Binding IsCurrentRepositoryHead, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="ブランチ名" Width="220" DisplayMemberBinding="{Binding FriendlyName}"/>
+                    <GridViewColumn Header="種類" Width="80">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding IsRemote, Converter={StaticResource BranchKindConverter}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Upstream" Width="180" DisplayMemberBinding="{Binding UpstreamName}"/>
+                    <GridViewColumn Header="Ahead/Behind" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="↑"/><Run Text="{Binding AheadBy, Mode=OneWay}"/>
+                                    <Run Text="  ↓"/><Run Text="{Binding BehindBy, Mode=OneWay}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="操作" Width="220">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="チェックアウト" Style="{StaticResource InlineActionButton}"
+                                            Command="{Binding DataContext.CheckoutCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Content="マージ" Style="{StaticResource InlineActionButton}"
+                                            Command="{Binding DataContext.MergeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Content="削除" Style="{StaticResource InlineActionButton}"
+                                            Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="#FFC42B1C" TextWrapping="Wrap" Margin="0,8,0,0"
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"/>
+    </Grid>
+</UserControl>
